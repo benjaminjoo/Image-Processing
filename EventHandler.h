@@ -21,10 +21,10 @@ public:
 	double move			= 0.0f;
 	double strafe		= 0.0f;
 
-	double step_speed	= 5.0f;
+	double step_speed	= 0.1f;
 	double turn_speed	= 2.0f;
 
-	double sensitivity	= 0.0f;
+	double sensitivity	= 1.0f;
 
 	EventHandler();
 	EventHandler(const double& turn_, const double& move_, const double& strf_, const double& sens_);

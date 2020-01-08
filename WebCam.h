@@ -20,6 +20,10 @@ private:
 	int brightness							= 200;
 	int motionTriggerSensitivity			= 100;
 	Uint32 backgroundColour					= 0x00000000;
+	double screenScale						= 1.0f;
+	double screenOffsetX					= 0.0f;
+	double screenOffsetY					= 0.0f;
+
 	bool isOn								= true;
 
 	int nCameras							= 0;
@@ -41,6 +45,7 @@ private:
 	void projectMovement();
 	void projectNoiseReduction();
 	void projectCircular(std::vector<int3> circles);
+	void projectMandelbrot(double scale, double offsetX, double offsetY);
 
 	void clearFrame(int* frame, int w, int h, int c);
 	void copyFrame(int* frameA, int* frameB, int w, int h);

@@ -33,147 +33,16 @@ void EventHandler::HandleUserEvents()
 	const Uint8* state = SDL_GetKeyboardState(nullptr);
 
 	if (state[SDL_SCANCODE_UP] && !state[SDL_SCANCODE_DOWN])
-	{
-		if ((state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT]) && state[SDL_SCANCODE_SPACE])
-		{
-			move = step_speed * 8;
-		}
-		else if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
-		{
-			move = step_speed * 4;
-		}
-		else
-		{
-			move = step_speed;
-		}
-	}
+		move = -step_speed;
 
 	if (state[SDL_SCANCODE_DOWN] && !state[SDL_SCANCODE_UP])
-	{
-		if ((state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT]) && state[SDL_SCANCODE_SPACE])
-		{
-			move = -step_speed * 8;
-		}
-		else if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
-		{
-			move = -step_speed * 4;
-		}
-		else
-		{
-			move = -step_speed;
-		}
-	}
+		move = step_speed;
 
 	if (state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_RIGHT])
-	{
-		if (state[SDL_SCANCODE_LALT])
-		{
-			if ((state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT]) && state[SDL_SCANCODE_SPACE])
-			{
-				strafe = -step_speed * 8;
-			}
-			else if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
-			{
-				strafe = -step_speed * 4;
-			}
-			else
-			{
-				strafe = -step_speed;
-			}
-		}
-		else
-		{
-			turn -= turn_speed;
-		}
-	}
+		strafe = -step_speed;
 
 	if (state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_LEFT])
-	{
-		if (state[SDL_SCANCODE_LALT])
-		{
-			if ((state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT]) && state[SDL_SCANCODE_SPACE])
-			{
-				strafe = +step_speed * 8;
-			}
-			else if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
-			{
-				strafe = +step_speed * 4;
-			}
-			else
-			{
-				strafe = +step_speed;
-			}
-		}
-		else
-		{
-			turn += turn_speed;
-		}
-	}
-
-	if (state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_S])
-	{
-		if ((state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT]) && state[SDL_SCANCODE_SPACE])
-		{
-			move = step_speed * 8;
-		}
-		else if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
-		{
-			move = step_speed * 4;
-		}
-		else
-		{
-			move = step_speed;
-		}
-	}
-
-	if (state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_W])
-	{
-		if ((state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT]) && state[SDL_SCANCODE_SPACE])
-		{
-			move = -step_speed * 8;
-		}
-		else if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
-		{
-			move = -step_speed * 4;
-		}
-		else
-		{
-			move = -step_speed;
-		}
-	}
-
-	if (state[SDL_SCANCODE_A] && !state[SDL_SCANCODE_D])
-	{
-		if ((state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT]) && state[SDL_SCANCODE_SPACE])
-		{
-			strafe = -step_speed * 8;
-		}
-		else if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
-		{
-			strafe = -step_speed * 4;
-		}
-		else
-		{
-			strafe = -step_speed;
-		}
-	}
-
-	if (state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_A])
-	{
-		if ((state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT]) && state[SDL_SCANCODE_SPACE])
-		{
-			strafe = step_speed * 8;
-		}
-		else if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
-		{
-			strafe = step_speed * 4;
-		}
-		else
-		{
-			strafe = step_speed;
-		}
-	}
-
+		strafe = step_speed;	
 
 	while (SDL_PollEvent(&event))
 	{
@@ -208,6 +77,9 @@ void EventHandler::HandleUserEvents()
 			case SDLK_s:
 				styleFlag = 5;
 				break;
+			case SDLK_f:
+				styleFlag = 6;
+				break;
 			case SDLK_KP_PLUS:
 				{
 				if (brightness < 750)
@@ -221,17 +93,23 @@ void EventHandler::HandleUserEvents()
 				}
 				break;
 			case SDLK_PAGEUP:
-			{
-				if (mtSens < 500000)
-					mtSens += 5;
-			}
-			break;
+				{
+					if (mtSens < 500000)
+						mtSens += 5;
+				}
+				break;
 			case SDLK_PAGEDOWN:
-			{
-				if (mtSens > 5)
-					mtSens -= 5;
-			}
-			break;
+				{
+					if (mtSens > 5)
+						mtSens -= 5;
+				}
+				break;
+			case SDLK_KP_MULTIPLY:
+				sensitivity *= 1.1f;
+				break;
+			case SDLK_KP_DIVIDE:
+				sensitivity *= 0.9f;
+				break;
 			default:
 				break;
 			}

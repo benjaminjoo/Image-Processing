@@ -16,7 +16,7 @@ WebCam::WebCam(int w, int h, Uint32 c):
 
 	nCameras = setupESCAPI();
 	if (nCameras == 0)
-		std::cout << "Failed setting camera..." << std::endl;
+		std::cout << "Failed setting up camera..." << std::endl;
 
 	capture.mWidth = width;
 	capture.mHeight = height;
@@ -409,6 +409,66 @@ void WebCam::projectPatternNoiseReduction(bool* pattern, int w, int h, int pacin
 }
 
 
+void WebCam::projectMandelbrot(double scale, double offsetX, double offsetY)
+{
+	//Displays Mandelbrot Set based on pseudocode found on Wikipedia
+
+	Screen->clear();
+
+	for (int j = 0; j < height; j++)
+		for (int i = 0; i < width; i++)
+		{
+			double screenUnit = static_cast<double>(height) * 0.5f;
+			//double centreX = static_cast<double>(width) / 7.0f * 5.0f;
+			//double centreY = static_cast<double>(height) * 0.5f;
+			double centreX = 0.0f;
+			double centreY = 0.0f;
+
+			double x_0 = ((static_cast<double>(i) - centreX) / screenUnit + screenOffsetX) * scale;
+			double y_0 = ((static_cast<double>(j) - centreY) / screenUnit + screenOffsetY) * scale;
+
+			double x = 0.0f;
+			double y = 0.0f;
+
+			int iter = 0;
+			int maxIter = 256;
+
+			double rSquare = 0.0f;
+			double iSquare = 0.0f;
+			double zSquare = 0.0f;
+
+			while (rSquare + iSquare <= 4.0 && iter < maxIter)
+			{
+				x = rSquare - iSquare + x_0;
+				y = zSquare - rSquare - iSquare + y_0;
+				rSquare = x * x;
+				iSquare = y * y;
+				zSquare = (x + y) * (x + y);
+				iter++;
+			}
+
+			//while (x * x + y * y <= 4.0f && iter < maxIter)
+			//{
+			//	double xTemp = x * x - y * y + x_0;
+			//	y = 2 * x * y + y_0;
+			//	x = xTemp;
+			//	iter++;
+			//}
+
+			colour32 finalPixel;
+
+			finalPixel.c[3] = 0;
+			finalPixel.c[2] = 0;
+			finalPixel.c[1] = 0;
+			finalPixel.c[0] = iter;
+
+			Screen->putPixel(i, j, finalPixel.argb);
+		}
+
+	Screen->update();
+}
+
+
 void WebCam::clearFrame(int* frame, int w, int h, int c)
 {
 	for (int* i = frame; i < frame + w * h; i++)
@@ -431,9 +491,14 @@ void WebCam::addViewCircle(int3 c)
 
 void WebCam::update()
 {
+	Controls->HandleUserEvents();
+
 	isOn = Controls->isRunning();
 	brightness = Controls->brightness;
 	motionTriggerSensitivity = Controls->mtSens;
+	screenScale = Controls->sensitivity;
+	screenOffsetX += Controls->strafe;
+	screenOffsetY += Controls->move;
 
 	doCapture(0); while (isCaptureDone(0) == 0) {}
 
@@ -466,10 +531,13 @@ void WebCam::update()
 					projectCircular(viewCircles);
 			}
 			break;
+		case 6:
+			projectMandelbrot(screenScale, screenOffsetX, screenOffsetY);
+			break;
 		default:
 			projectUnaltered();
 			break;
 	}
 
-	Controls->HandleUserEvents();
+	Controls->ceaseMotion();
 }

@@ -23,6 +23,11 @@ colour32 getGrayScalePixel(double s)
 {
 	colour32 result;
 
+	if (s < 0.0f)
+		s = 0.0f;
+	if (s > 1.0f)
+		s = 1.0f;
+
 	result.c[3] = 0;
 	result.c[2] = result.c[1] = result.c[0] = (unsigned char)((double)255 * s);
 
